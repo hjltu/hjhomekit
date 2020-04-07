@@ -2,9 +2,10 @@
 
 #json file generator for homekit2mqtt
 
-INSTANCE_DIR = 'instance'
+INSTANCE_DIR = '../instance'
 #mkdir -p -- "$INSTANCE_DIR"
 FILE="$INSTANCE_DIR/homekit.json"
+MAC_FILE = "$INSTANCE_DIR/homekit.mac"
 
 if [ -z $3 ]; then
     echo "ERR no accessory input"
@@ -266,7 +267,7 @@ mac() {
     MAC=$2
     #if [[ "$MAC" =~ "[0-9A-F][0-9A-F]:[0-9A-F][0-9A-F]:[0-9A-F][0-9A-F]:[0-9A-F][0-9A-F]" ]]; then
     if [[ "$MAC" =~ ^[0-9A-F][0-9A-F]:[0-9A-F][0-9A-F]:[0-9A-F][0-9A-F]:[0-9A-F][0-9A-F]$ ]]; then
-        sudo sed -i "s/AA:BB:[0-Z][0-Z]:[0-Z][0-Z]:[0-Z][0-Z]:[0-Z][0-Z]/AA:BB:$MAC/" /etc/systemd/system/hjhome.service
+        echo "AA:BB:$MAC" > $MAC_FILE
         echo "Homekit MAC changed to: AA:BB:$MAC"
     else
         echo "ERR: Wrong homekit MAC: AA:BB:$MAC"

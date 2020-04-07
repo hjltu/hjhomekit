@@ -12,6 +12,7 @@ current_dir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentfra
 parent_dir = os.path.dirname(current_dir)
 sys.path.insert(0, parent_dir)
 from setup.rpi_serial import serial as SERIAL
+from setup.rpi_serial import mac as SERIAL_MAC
 
 CSV_FILE = SERIAL + '.csv'
 CSV_PATH = os.environ['HOME']+'/config'
