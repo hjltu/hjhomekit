@@ -59,7 +59,7 @@ def main():
     if check_csv_file_exist() is not True:
         return "file {} not found in {}".format(CSV_FILE, CSV_PATH)
     acc = parse_csv_file(CSV_PATH + '/' + CSV_FILE)
-    if type(acc) is 'str':
+    if isinstance(acc, str):
         return acc
     res = json_file_gen(acc)
     print('csv deploy result:',res)

@@ -43,13 +43,13 @@ def read_csv(csvfile):
 
 def csv_to_list_of_dicts(reader):
     l=[]
-    line=0
+    line = 0
     d={}
     for row in reader:
         if row:
             row = remove_whitespaces_from_list(row)
             if '#' not in row[0]:
-                if line is 0:
+                if line == 0:
                     col = row
                 else:
                     try:
