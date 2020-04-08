@@ -5,18 +5,23 @@ import csv_deploy
 current_dir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 parent_dir = os.path.dirname(current_dir)
 sys.path.insert(0, parent_dir)
-from config.hjhome import MQTT_SERVER, HOMEKIT_NAME,
+from config.hjhome import MQTT_SERVER, HOMEKIT_NAME, \
     SETUP_DIR, INSTANCE_DIR, MAC_FILE, HOMEKIT_ACCESSORY_FILE
 from setup.rpi_serial import serial as SERIAL
 from setup.rpi_serial import mac as SERIAL_MAC
 from setup.rpi_serial import pin as PIN_CODE
 
-FILE = INSTANCE_DIR + "/" + HOMEKIT_ACCESSORY_FILE
+ACC_FILE = INSTANCE_DIR + "/" + HOMEKIT_ACCESSORY_FILE
+MAC_FILE = INSTANCE_DIR + "/" + MAC_FILE
 
 print("create accessories")
-csv_deploy.main()
-MAC_ADDR = os.system("cat " + INSTANCE_DIR + "/" + MAC_FILE)
-echo MAC_ADDR
+res = csv_deploy.main()
+if res is not True:
+    print('deploy ERR:', res)
+    sys.exit(1)
+with open(MAC_FILE, 'r') as file:
+    MAC_ADDR = file.read().replace('\n', '')
 
 print("start homekit2mqtt")
-os.system("homekit2mqtt -m " + $FILE + "-b " + HOMEKIT_NAME + " -a " + MAC_ADDR + " -c " PIN_CODE + " -u " + MQTT_SERVER)
+print("homekit2mqtt -m " + ACC_FILE + " -b " + HOMEKIT_NAME + " -a " + MAC_ADDR + " -c " + PIN_CODE + " -u " + MQTT_SERVER)
+os.system("homekit2mqtt -m " + ACC_FILE + " -b " + HOMEKIT_NAME + " -a " + MAC_ADDR + " -c " + PIN_CODE + " -u " + MQTT_SERVER)

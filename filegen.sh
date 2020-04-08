@@ -2,10 +2,10 @@
 
 #json file generator for homekit2mqtt
 
-INSTANCE_DIR = '../instance'
+INSTANCE_DIR='../instance'
 #mkdir -p -- "$INSTANCE_DIR"
 FILE="$INSTANCE_DIR/homekit.json"
-MAC_FILE = "$INSTANCE_DIR/homekit.mac"
+MAC_FILE="$INSTANCE_DIR/homekit.mac"
 
 if [ -z $3 ]; then
     echo "ERR no accessory input"
@@ -265,8 +265,11 @@ ACCESSORY="$ACCESSORY$MOTION"
 
 mac() {
     MAC=$2
+    echo "AA:BB:$MAC" > $MAC_FILE
+    return
+    # TODO check mac regexp
     #if [[ "$MAC" =~ "[0-9A-F][0-9A-F]:[0-9A-F][0-9A-F]:[0-9A-F][0-9A-F]:[0-9A-F][0-9A-F]" ]]; then
-    if [[ "$MAC" =~ ^[0-9A-F][0-9A-F]:[0-9A-F][0-9A-F]:[0-9A-F][0-9A-F]:[0-9A-F][0-9A-F]$ ]]; then
+    if [ "$MAC" =~ ^[0-9A-F][0-9A-F]:[0-9A-F][0-9A-F]:[0-9A-F][0-9A-F]:[0-9A-F][0-9A-F]$ ]; then
         echo "AA:BB:$MAC" > $MAC_FILE
         echo "Homekit MAC changed to: AA:BB:$MAC"
     else
@@ -279,13 +282,19 @@ mac() {
 #create accessories
 #lamp test лампа
 
-ARGS=`expr $# / 3`
-echo "args = $ARGS"
-for (( i=0; i<$ARGS; i++ ))
+#ARGS=`expr $# / 3`
+#echo "args = $ARGS"
+#for (( i=0; i<$ARGS; i++ ))    # /bin/bash
+#for i in $@     # /bin/sh
+while $@     # /bin/sh
 do
-    echo "$i create: $1 $2 $3"
-    $1 $2 $3
-    shift 3
+    if [ "$1" != "" ]; then
+        echo "create: $1 $2 $3"
+        $1 $2 $3
+        shift 3
+    else
+        break
+    fi
 done
 
 #################################################
@@ -293,11 +302,12 @@ done
 echo "{$ACCESSORY}" > $FILE
 
 LINE=`cat $FILE | wc -l`
+echo "line = $LINE in file $FILE"
 if [ $LINE -gt 10 ]
 then
 #	echo " remove (,) after last accessory"
-	let LINE=$LINE-1
-#	echo "$LINE"
+#	let LINE=$LINE-1    # bash
+    LINE=$((LINE-1))    # bash, sh
 	sed -i "${LINE}s/,//" $FILE
 else
 	echo "ERR no accessories in $FILE"
