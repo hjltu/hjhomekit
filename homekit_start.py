@@ -23,5 +23,5 @@ with open(MAC_FILE, 'r') as file:
     MAC_ADDR = file.read().replace('\n', '')
 
 print("start homekit2mqtt")
-print("homekit2mqtt -m " + ACC_FILE + " -b " + HOMEKIT_NAME + " -a " + MAC_ADDR + " -c " + PIN_CODE + " -u " + MQTT_SERVER)
-os.system("homekit2mqtt -m " + ACC_FILE + " -b " + HOMEKIT_NAME + " -a " + MAC_ADDR + " -c " + PIN_CODE + " -u " + MQTT_SERVER)
+print("homekit2mqtt -m " + ACC_FILE + " -b " + HOMEKIT_NAME + " -a " + MAC_ADDR + " -c " + PIN_CODE + " -u mqtt://" + MQTT_SERVER)
+os.system("homekit2mqtt -m " + ACC_FILE + " -b " + HOMEKIT_NAME + " -a " + MAC_ADDR + " -c " + PIN_CODE + " -u mqtt://" + MQTT_SERVER)
