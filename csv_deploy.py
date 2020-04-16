@@ -15,7 +15,7 @@ from setup.rpi_serial import mac as SERIAL_MAC
 
 CSV_FILE = SERIAL + '.csv'
 #CSV_PATH = os.environ['HOME']+'/config'
-CSV_PATH = parent_dir+'/config'
+CSV_PATH = '/root/config'
 
 
 def check_csv_file_exist():
@@ -50,7 +50,7 @@ def hass_conf_file_gen(acc):
     """
     acc_prop=''
     for a in acc:
-        acc_prop += a["type"]+' '+a["name"]+a['comm']+' '+a['stat']+' '
+        acc_prop += a["type"]+' '+a["name"]+' '+a['comm']+' '+a['stat']+' '
     print('acc_prop len:', len(acc_prop), 'acc_prop:', acc_prop)
     return os.system("./hass_filegen.sh " + acc_prop)
 
@@ -71,10 +71,11 @@ def main():
     if isinstance(acc, str):
         return acc
     res = json_file_gen(acc)
-    print('csv deploy result:',res)
     if res != 0:
         return "filegen exit code is: " + str(res)
-    res = hass_conf_gen(acc)
+    res = hass_conf_file_gen(acc)
+    if res != 0:
+        return "hass_filegen exit code is: " + str(res)
     return True
 
 

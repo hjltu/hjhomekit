@@ -3,7 +3,7 @@
 #json file generator for homekit2mqtt
 
 HASS_DIR='../hass'
-mkdir -p -- "$HASS_DIR"
+#mkdir -p -- "$HASS_DIR"
 FILE="$HASS_DIR/configuration.yaml"
 
 if [ -z $4 ]; then
@@ -12,13 +12,22 @@ if [ -z $4 ]; then
 fi
 
 ACCESSORY='
+# Configure a default setup of Home Assistant (frontend, api, etc)
 default_config:
+
+# Uncomment this if you are using SSL/TLS, running in Docker container, etc.
+# http:
+#   base_url: example.duckdns.org:8123
+
+# Text to speech
 tts:
   - platform: google_translate
+
 group: !include groups.yaml
 automation: !include automations.yaml
 script: !include scripts.yaml
 scene: !include scenes.yaml
+
 mqtt:
   broker: "172.17.0.1"
   port: 1883
@@ -43,6 +52,7 @@ light '$1':
     payload_off: "0"
 '
 ACCESSORY="$ACCESSORY$LAMP"
+sleep .1
 }
 
 outlet() {
@@ -61,8 +71,14 @@ dimm_lamp() {
 DIMM_LAMP='
 light '$1':
   - platform: mqtt
-   brightness_command_topic: "'$2'"
-   brightness_state_topic: "'$3'"
+    brightness_command_topic: "'$2'"
+    brightness_state_topic: "'$3'"
+    on_command_type: "brightness"
+    brightness_scale: 255
+    command_topic: "'$2'"
+    state_topic: "'$3'"
+    payload_on: "99"
+    payload_off: "0"
 '
 ACCESSORY="$ACCESSORY$DIMM_LAMP"
 }
@@ -171,7 +187,7 @@ done
 
 #################################################
 
-echo "{$ACCESSORY}" > $FILE
+echo "$ACCESSORY" > $FILE
 
 LINE=`cat $FILE | wc -l`
 echo "line = $LINE in file $FILE"
