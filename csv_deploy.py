@@ -8,11 +8,10 @@ hjltu@ya.ru
 
 import os, sys, inspect, csv
 import csv2list
-current_dir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
-parent_dir = os.path.dirname(current_dir)
-sys.path.insert(0, parent_dir)
+sys.path.append("/root")
 from setup.rpi_serial import serial as SERIAL
 from setup.rpi_serial import mac as SERIAL_MAC
+
 
 CSV_FILE = SERIAL + '.csv'
 #CSV_PATH = os.environ['HOME']+'/config'
@@ -44,6 +43,16 @@ def json_file_gen(acc):
     print('acc_prop len:', len(acc_prop), 'acc_prop:', acc_prop)
     return os.system("./filegen.sh " + acc_prop)
 
+def hass_conf_file_gen(acc):
+    """
+    exec hass_filegen.sh to create
+        config file homeassistant accessory
+    """
+    acc_prop=''
+    for a in acc:
+        acc_prop += a["type"]+' '+a["name"]+a['comm']+' '+a['stat']+' '
+    print('acc_prop len:', len(acc_prop), 'acc_prop:', acc_prop)
+    return os.system("./hass_filegen.sh " + acc_prop)
 
 def main():
     """
@@ -65,6 +74,7 @@ def main():
     print('csv deploy result:',res)
     if res != 0:
         return "filegen exit code is: " + str(res)
+    res = hass_conf_gen(acc)
     return True
 
 
