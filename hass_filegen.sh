@@ -71,13 +71,13 @@ dimm_lamp() {
 DIMM_LAMP='
 light '$1':
   - platform: mqtt
-    brightness_command_topic: "'$2'"
-    brightness_state_topic: "'$3'"
-    on_command_type: "brightness"
-    brightness_scale: 255
+    #brightness_command_topic: "'$2'"
+    #brightness_state_topic: "'$3'"
+    #on_command_type: "brightness"
+    #brightness_scale: 255
     command_topic: "'$2'"
     state_topic: "'$3'"
-    payload_on: "99"
+    payload_on: "125"
     payload_off: "0"
 '
 ACCESSORY="$ACCESSORY$DIMM_LAMP"
@@ -133,6 +133,10 @@ ACCESSORY="$ACCESSORY$HUM"
 
 term() {
 TERM='
+sensor:
+  - platform: mqtt
+    state_topic: "'$3'"
+    unit_of_measurement: "°C"
 '
 ACCESSORY="$ACCESSORY$TERM"
 }
